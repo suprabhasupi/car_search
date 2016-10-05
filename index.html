@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Car Search</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="images/1.png" type="image/gif" sizes="16x16">
+    <link rel="stylesheet" type="text/css" href="bower_components/angular-material/angular-material.css">
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+</head>
+<!-- search -->
+
+<body ng-app="zoomSeach" ng-controller="searchCtrl">
+    <header>
+        <img src="images/1.png">
+        <span class="roboto_bold">Zoomcar</span>
+        <p class="roboto_reg">Car Rental App</p>
+    </header>
+    <!-- search -->
+    <div class="user_input roboto_reg">
+        <p>Search Cars:</p>
+        <div layout="row" layout-xs="column" layout-sm="row">
+            <!-- <p>Start Date:</p> -->
+            <div flex="2"></div>
+            <div layout="column" flex-lg="20" flex-md="30" flex-xs="120">
+                <md-datepicker ng-model="startDate" md-placeholder="Start date" md-open-on-focus md-min-date="today"></md-datepicker>
+                <!-- <p class="date_label">Start Date:</p> -->
+            </div>
+            <div flex="5"></div>
+            <!-- <p>Start Date:</p> -->
+            <div layout="column" flex-lg="25" flex-md="60" flex-xs="120">
+                <md-datepicker ng-model="endDate" md-placeholder="End date" md-open-on-focus md-min-date="nextDay"></md-datepicker>
+                <!-- <p class="date_label">End Date:</p> -->
+            </div>
+            <div flex="5"></div>
+            <!-- <p>Pick up distance(kms):</p> -->
+            <div layout="column" flex="35">
+                <md-slider flex-lg="60" flex-md="120" flex-sm="120" flex-xs="120" md-discrete ng-model="distance" step="3" min="3" max="30" aria-label="distance"></md-slider>
+                <p class="date_label pick_label">Pick up distance {{distance}}km</p>
+            </div>
+        </div>
+        <md-button class="md-raised" ng-click="search()" class="roboto_bold">search</md-button>
+    </div>
+    <!-- filter -->
+    <md-card md-theme="{{ showDarkTheme ? 'dark-grey' : 'default' }} " md-theme-watch>
+        <div class="sorting">
+            <div layout="row" layout-xs="column">
+                
+                <section ng-show="result" flex="80" class="roboto_reg">
+                <div flex="60">
+                    <p class="availablity roboto_bold">Available Cars:</p>
+                </div>
+                    <div layout="row" layout-xs="row">
+                        <div flex="20">
+                            <p class="filterby">Filter By:</p>
+                        </div>
+                        <div flex="30" class="dropdown">
+                            <md-select ng-model="selectedType">
+                                <md-option ng-value="all">All</md-option>
+                                <md-option ng-repeat="type in carType" ng-value="type">
+                                    {{type}}
+                                </md-option>
+                            </md-select>
+                        </div>
+                        <div flex="30">
+                            <md-button class="md-raised price_button" ng-click="reverse = false; sort=false" ng-show="sort">Price <i class="fa fa-angle-down" aria-hidden="true"></i></md-button>
+                            <md-button class="md-raised price_button" ng-click="reverse = true; sort=true" " ng-hide="sort ">Price <i class="fa fa-angle-up " aria-hidden="true "></i></md-button> 
+                </div>
+                </div>
+                </section>
+
+        </div>
+    </div>
+<div ng-hide="filteredCars.length " class="no_items_found roboto_reg">{{message}}</div>
+    <!-- car list --> 
+    <div ng-repeat="car in filteredCars=( carlist|filter:typeFilter|orderBy: 'pricePerHour':reverse) " class="no_outline" ng-class="{ 'selected':$index==selectedIndex} " ng-click="select($index) ">
+         <div class="output_list ">
+          <md-card md-theme="{{ showDarkTheme ? 'dark-grey' : 'default' }} " md-theme-watch>
+        <div layout="row" layout-xs="column ">
+            <div flex="30 " class="center-block car_image ">
+                <img src="images/2.png ">
+            </div>
+            <div layout="column" flex="50" class="label_with_icon">
+            <div flex="30 " flex-xs="120 " class="model_name_inner">
+
+                <p class="model_name roboto_bold">{{car.model}} <br> <span class="brand_name center roboto_reg">{{car.brand}}</span></p>
+                 </div>
+                <div layout="row " flex="40" flex-xs="120 " class="all_the_icons roboto_reg">
+                    <div flex="40 " class="setaer ">
+                        <img src="images/3.png " class="small_icon "><span> {{car.seater}} Seater</span>
+                    </div>
+                    <div flex="10 "></div>
+                    <div flex="40 " class="setaer ">
+                        <img src="images/4.png " class="small_icon "><span> {{car.transmission}}</span>
+                    </div>
+                    <div flex="10 "></div>
+                    <div flex="40 " class="setaer ">
+                        <img src="images/5.png " class="small_icon "><span> {{car.airBags}} Bags</span>
+                    </div>
+                </div>
+           </div>
+            <div flex="40 " flex-xs="120 " class="rent " layout="column">
+            <div class="rent_inner">
+                <p class="rupees opnsans_reg">&#8377; {{car.rent}}</p>
+
+                <p class="distance_km opnsans_reg">{{car.distanceKMS}} kms away</p>
+                </div>
+            </div>
+        </div>
+        </md-card>
+    </div>
+    <!-- {{car}} -->
+    </div>
+    </md-card>
+</body>
+<script type="text/javascript " src="bower_components/angular/angular.min.js "></script>
+<script type="text/javascript " src="bower_components/angular-animate/angular-animate.min.js "></script>
+<script type="text/javascript " src="bower_components/angular-resource/angular-resource.min.js "></script>
+<script type="text/javascript " src="bower_components/angular-aria/angular-aria.min.js "></script>
+<script type="text/javascript " src="bower_components/angular-messages/angular-messages.min.js "></script>
+<script type="text/javascript " src="bower_components/angular-material/angular-material.min.js "></script>
+<script type="text/javascript " src="app.js "></script>
+<script type="text/javascript " src="app.service.js "></script>
+
+</html>
